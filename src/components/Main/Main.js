@@ -10,6 +10,7 @@ import Card from 'react-bootstrap/Card'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
+import {Redirect} from 'react-router-dom'
 
 
 export class Main extends Component {
@@ -41,6 +42,7 @@ export class Main extends Component {
 
     componentDidMount = () => {
         console.log('ok')
+        //if(!localStorage.getItem('userId')) return
         this.fetchPosts()
         this.fetchUsers()
     }
@@ -265,6 +267,9 @@ export class Main extends Component {
 
 
     render() {
+        // if(!localStorage.getItem('userId')) {
+        //     return <Redirect to='/' push></Redirect>
+        // }
         return (
             <div>
                 <Row>
@@ -307,7 +312,7 @@ export class Main extends Component {
                             <Row>
 
                                 <input type="file" />
-                                <textarea type="text" name="newPost" value={this.state.newPost}
+                                <tex    tarea type="text" name="newPost" value={this.state.newPost}
                                     onChange={this.change} placeholder="Your post here" />
                            
                                     {/* <FormControl placeholder="Your post here" as="textarea" 

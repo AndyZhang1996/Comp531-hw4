@@ -6,6 +6,7 @@ import { Redirect, withRouter } from "react-router-dom"
 export class Registration extends Component {
 
 
+
   state = {
     accountName: "",
     emailAddress: "",
@@ -50,7 +51,7 @@ export class Registration extends Component {
     })
   }
 
-  ageValidation = async () => {
+  ageValidation = () => {
     let dob = this.state.dob
     dob = dob.replace(/\D/g, '');              //convert to string and strip of the '-'
     var birthYear = Number(dob.substring(0, 4));
@@ -64,22 +65,29 @@ export class Registration extends Component {
     if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
       age--;
     }
+    let ret = false;
     if (age < 18) {
       this.setState({ ageValid: false })
     } else {
       this.setState({ ageValid: true })
+      ret = true;
     }
+    return ret;
   }
 
   passwordValidation = e => {
     let password = document.getElementById("password");
     let passwordConfrm = document.getElementById("passwordConfrm");
 
+    let ret = false;
     if (password.value === passwordConfrm.value) {
       this.setState({ passwordValid: true })
+      ret = true;
     } else {
       this.setState({ passwordValid: false })
     }
+
+    return ret;
 
   }
 
@@ -112,16 +120,17 @@ export class Registration extends Component {
     // e.preventDefault();
     //this.setState({ ageValid: true })
     //return;
-    this.ageValidation()
-    this.passwordValidation()
+    let ageValid = this.ageValidation()
+    let passwordValid = this.passwordValidation()
+    console.log(ageValid + ' ' + passwordValid)
     // this.setState({ageValid:true}, () => console.log(this.state.ageValid))
     // this.setState({ ageValid: true })
 
-    console.log(this.state.ageValid)
-    console.log(this.state.passwordValid)
+    // console.log(this.state.ageValid)
+    // console.log(this.state.passwordValid)
     let dobMsg = document.getElementById("dobMsg")
     let passwordMsg = document.getElementById("passwordMsg")
-    if (this.state.ageValid === false) {
+    if (ageValid === false) {
 
       dobMsg.style = "display: inline"
       dobMsg.innerHTML = "Only people who are 18 years old or older can register."
@@ -129,17 +138,23 @@ export class Registration extends Component {
       dobMsg.style = "display: None"
     }
 
-    if (this.state.passwordValid === false) {
+    if (passwordValid === false) {
       passwordMsg.style = "display: inline"
       passwordMsg.innerHTML = "password does not match!"
     } else {
       passwordMsg.style = "display: None"
     }
     console.log("in handleClick!!!!!!!!!!")
-    if (this.state.ageValid == true && this.state.passwordValid == true) {
+    if (ageValid === true && passwordValid === true) {
       localStorage.setItem("userId", this.state.userId)
+      localStorage.setItem('userValid', true);
       this.setState({ redirectMain: true })
       console.log("in inner!!!!!!!!!!")
+ 
+      // this.logined = true;
+
+    localStorage.setItem('logined', 't');
+      e.preventDefault();
     }
 
   }
@@ -149,9 +164,13 @@ export class Registration extends Component {
     return (
       <div className="registration">
         <h1>Register</h1>
-        {this.state.redirectMain && <Redirect to='/Main' push />}
+        {/* {this.state.redirectMain */}
+        {/* {localStorage.setItem('userId', 1)} */}
+        {/* {localStorage.setItem('userValid', true)} */}
+        {/* {<Redirect to='/Main' push />} */}
+          { this.state.redirectMain && <Redirect to='/Main' push />}
         {/* <form className="registrationForm" onSubmit={this.handleSubmit}> */}
-        <form className="registrationForm">
+        <form className="registrationForm" onSubmit={e => e.preventDefault()}>
 
           <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div className="row ml-5">
@@ -163,7 +182,7 @@ export class Registration extends Component {
                 value={this.state.accountName}
                 onChange={this.change}
                 title="upper or lower case letters and numbers, may not start with a number"
-                required
+                //required
               />
             </div>
             <div className="row ml-5 mt-2">
@@ -174,7 +193,7 @@ export class Registration extends Component {
                 value={this.state.emailAddress}
                 type="email"
                 onChange={this.change}
-                required
+                //required
               />
             </div>
 
@@ -188,7 +207,7 @@ export class Registration extends Component {
                 type="tel"
                 onChange={this.change}
                 title="The format should be xxxxxxxxxx"
-                required
+                //required
               />
             </div>
 
@@ -199,7 +218,7 @@ export class Registration extends Component {
                 value={this.state.dob}
                 type="date"
                 onChange={this.change}
-                required
+                //required
               />
               <span id="dobMsg"></span>
             </div>
@@ -215,7 +234,7 @@ export class Registration extends Component {
                 type="text"
                 onChange={this.change}
                 title="should be 5 digits"
-                required
+                //required
               />
             </div>
 
@@ -228,7 +247,7 @@ export class Registration extends Component {
                 value={this.state.password}
                 type="password"
                 onChange={this.change}
-                required
+                //required
               />
             </div>
 
@@ -242,14 +261,14 @@ export class Registration extends Component {
                 type="password"
                 onChange={this.change}
                 onKeyUp={this.passwordValidation}
-                required
+                //required
               />
               <span id="passwordMsg"></span>
             </div>
 
 
             <div className="button">
-              <button type="submit" className="btn btn-primary btn-sm mt-2" onClick={this.handleSubmit}>Register</button>
+              <button className="btn btn-primary btn-sm mt-2" onClick={this.handleSubmit}>Register</button>
               <button className="btn btn-primary btn-sm ml-1 mt-2" onClick={this.cancelForm}>Clear</button>
             </div>
           </div>

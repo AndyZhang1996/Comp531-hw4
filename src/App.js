@@ -13,8 +13,6 @@ import { Row } from 'react-bootstrap'
 
 
 
-
-
 function App() {
   return (
     <Router>
@@ -48,7 +46,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => {
-      if ((localStorage.getItem("userValid") || "false") === "true") {
+      if (((localStorage.getItem("userId") || 'nothing') !== '' || false) == true) {
         return <Component {...props} />;
       } else {
         return (
